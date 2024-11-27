@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм»
 
 * Студент: [Амаль Габидов](https://up.htmlacademy.ru/javascript-individual/2/user/2567667).
-* Наставник: `Неизвестно`.
+* Наставник: [Станислав Михайлов](https://htmlacademy.ru/profile/id139638).
 
 ---
 
