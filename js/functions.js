@@ -25,38 +25,3 @@ function extractDigits(input) {
 
   return parseInt(digits, 10);
 }
-
-// Проверки для checkStringLength
-console.log(checkStringLength('проверяемая строка', 20));
-console.log(checkStringLength('проверяемая строка', 18));
-console.log(checkStringLength('проверяемая строка', 10));
-
-// Проверки для isPalindrome
-console.log(isPalindrome('топот'));
-console.log(isPalindrome('ДовОд'));
-console.log(isPalindrome('Кекс'));
-console.log(isPalindrome('Лёша на полке клопа нашёл'));
-
-// Пример 1: Строка с годом, извлекаем цифры
-console.log(extractDigits('2023 год'));
-
-// Пример 2: Строка с текстом и годом
-console.log(extractDigits('ECMAScript 2022'));
-
-// Пример 3: Строка с числовыми значениями и текстом
-console.log(extractDigits('1 кефир, 0.5 батона'));
-
-// Пример 4: Строка с числом в конце
-console.log(extractDigits('агент 007'));
-
-// Пример 5: Строка без цифр
-console.log(extractDigits('а я томат'));
-
-// Пример 6: Число в качестве входных данных
-console.log(extractDigits(2023));
-
-// Пример 7: Отрицательное число, извлекаем цифры
-console.log(extractDigits(-1));
-
-// Пример 8: Число с плавающей точкой, извлекаем цифры
-console.log(extractDigits(1.5));
