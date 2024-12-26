@@ -3,7 +3,7 @@ import {getRandomInteger, getRandomArrayElement} from './util.js';
 
 const createComment = () => ({
   id: getRandomInteger(Ranges.ID.MIN, Ranges.ID.MAX),
-  avatar: img/avatar-${getRandomInteger(Ranges.AVATAR.MIN, Ranges.AVATAR.MAX)}.svg,
+  avatar: `img/avatar-${getRandomInteger(Ranges.AVATAR.MIN, Ranges.AVATAR.MAX)}.svg`,
   message: Array.from(
     { length: getRandomInteger(Ranges.MESSAGE.MIN, Ranges.MESSAGE.MAX) },
     () => getRandomArrayElement(COMMENTS)
@@ -13,7 +13,7 @@ const createComment = () => ({
 
 const createPhoto = (id) => ({
   id,
-  url: photos/${id}.jpg,
+  url: `photos/${id}.jpg`,
   description: getRandomArrayElement(DESCRIPTIONS),
   likes: getRandomInteger(Ranges.LIKES.MIN, Ranges.LIKES.MAX),
   comments: Array.from(
