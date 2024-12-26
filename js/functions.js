@@ -14,13 +14,13 @@ function extractDigits(input) {
 
   let digits = '';
   for (let char of str) {
-      if (!isNaN(parseInt(char))) {
-          digits += char;
-      }
+    if (!isNaN(parseInt(char))) {
+      digits += char;
+    }
   }
 
   if (digits === '') {
-      return NaN;
+    return NaN;
   }
 
   return parseInt(digits, 10);
@@ -29,7 +29,7 @@ function extractDigits(input) {
 
 // Функция "Делу — время"
 function isMeetingWithinWorkday(workStart, workEnd, meetingStart, meetingDuration) {
-  function timeTiMinutes(time) {
+  function timeToMinutes(time) {
     const [hours, minutes] = time.split(':').map(Number);
     return hours * 60 + minutes;
   }
@@ -45,7 +45,7 @@ function isMeetingWithinWorkday(workStart, workEnd, meetingStart, meetingDuratio
 }
 
 isMeetingWithinWorkday('08:00', '17:30', '14:00', 90); // true
-isMeetingWithinWorkday('8:0', '10:0', '8:0', 120);     // true
+isMeetingWithinWorkday('8:0', '10:0', '8:0', 120); // true
 isMeetingWithinWorkday('08:00', '14:30', '14:00', 90); // false
-isMeetingWithinWorkday('14:00', '17:30', '08:0', 90);  // false
+isMeetingWithinWorkday('14:00', '17:30', '08:0', 90); // false
 isMeetingWithinWorkday('8:00', '17:30', '08:00', 900); // false
