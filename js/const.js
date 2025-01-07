@@ -1,9 +1,17 @@
-const Ranges = {
-  ID: { MIN: 1, MAX: 1000 },
-  AVATAR: { MIN: 1, MAX: 6 },
-  LIKES: { MIN: 15, MAX: 200 },
-  COMMENTS: { MIN: 0, MAX: 30 },
-  MESSAGE: { MIN: 1, MAX: 2 },
+const MIN_VALUES = {
+  ID: 1,
+  AVATAR: 1,
+  LIKES: 15,
+  COMMENTS: 0,
+  MESSAGE: 1,
+};
+
+const MAX_VALUES = {
+  ID: 1000,
+  AVATAR: 6,
+  LIKES: 200,
+  COMMENTS: 30,
+  MESSAGE: 2,
 };
 
 const PHOTOS_COUNT = 25;
@@ -27,4 +35,4 @@ const COMMENTS = [
 
 const NAMES = ['Иван', 'Мария', 'Александр', 'Екатерина', 'Сергей', 'Юлия'];
 
-export {Ranges, PHOTOS_COUNT, DESCRIPTIONS, COMMENTS, NAMES};
+export { MIN_VALUES, MAX_VALUES, PHOTOS_COUNT, DESCRIPTIONS, COMMENTS, NAMES };
