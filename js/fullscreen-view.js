@@ -10,13 +10,20 @@ const commentsLoader = bigPicture.querySelector('.comments-loader');
 const closeButton = bigPicture.querySelector('.big-picture__cancel');
 const body = document.body;
 
+const COMMENTS_PER_PAGE = 5; // Количество комментариев на один шаг загрузки
+let currentComments = [];
+let shownComments = 0;
+
+// Копируем шаблон комментария при инициализации
+const commentTemplate = socialComments.querySelector('.social__comment').cloneNode(true);
+
 // Функция для генерации комментариев
 const renderComments = (comments) => {
-  const commentTemplate = socialComments.querySelector('.social__comment');
   const fragment = document.createDocumentFragment();
 
   comments.forEach(({ avatar, name, message }) => {
     const commentElement = commentTemplate.cloneNode(true);
+
     const img = commentElement.querySelector('.social__picture');
     img.src = avatar;
     img.alt = name;
@@ -27,7 +34,20 @@ const renderComments = (comments) => {
     fragment.appendChild(commentElement);
   });
 
-  socialComments.replaceChildren(fragment);
+  socialComments.appendChild(fragment);
+};
+
+// Функция для показа следующей порции комментариев
+const showMoreComments = () => {
+  const remainingComments = currentComments.slice(shownComments, shownComments + COMMENTS_PER_PAGE);
+  renderComments(remainingComments);
+  shownComments += remainingComments.length;
+
+  commentsShownCount.textContent = shownComments;
+
+  if (shownComments >= currentComments.length) {
+    commentsLoader.classList.add('hidden');
+  }
 };
 
 // Функция для открытия полноразмерного окна
@@ -38,28 +58,37 @@ const openBigPicture = ({ url, likes, description, comments }) => {
   bigPictureImg.src = url;
   bigPictureImg.alt = description;
   likesCount.textContent = likes;
-  commentsShownCount.textContent = comments.length;
   commentsTotalCount.textContent = comments.length;
   socialCaption.textContent = description;
 
-  renderComments(comments);
+  // Удаляем старые комментарии и сбрасываем счетчики
+  socialComments.innerHTML = ''; // Очистка комментариев
+  currentComments = comments;
+  shownComments = 0;
 
-  commentCountBlock.classList.add('hidden');
-  commentsLoader.classList.add('hidden');
+  commentCountBlock.classList.remove('hidden');
+  commentsLoader.classList.remove('hidden');
 
-  // Добавляем обработчики для закрытия
+  // Показываем первую порцию комментариев
+  showMoreComments();
+
+  // Добавляем обработчик на кнопку загрузки дополнительных комментариев
+  commentsLoader.addEventListener('click', showMoreComments);
+
+  // Обработчики закрытия окна
   const onClose = () => {
     bigPicture.classList.add('hidden');
     body.classList.remove('modal-open');
     closeButton.removeEventListener('click', onClose);
     document.removeEventListener('keydown', onEscClose);
+    commentsLoader.removeEventListener('click', showMoreComments);
   };
 
-  const onEscClose = (evt) => {
+  function onEscClose(evt) {
     if (evt.key === 'Escape') {
       onClose();
     }
-  };
+  }
 
   closeButton.addEventListener('click', onClose);
   document.addEventListener('keydown', onEscClose);
