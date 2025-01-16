@@ -113,6 +113,13 @@ function onEscKeyPress(evt) {
   });
 });
 
+// Ограничение ввода в комментарий
+descriptionInput.addEventListener('input', () => {
+  if (descriptionInput.value.length >= MAX_DESCRIPTION_LENGTH) {
+    descriptionInput.value = descriptionInput.value.slice(0, MAX_DESCRIPTION_LENGTH); // Ограничиваем длину
+  }
+});
+
 // Открытие формы при выборе файла
 fileInput.addEventListener('change', () => {
   openEditForm();
