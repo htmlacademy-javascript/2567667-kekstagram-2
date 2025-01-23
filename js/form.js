@@ -109,13 +109,23 @@ function closeEditForm() {
 }
 
 // Закрытие формы при нажатии Escape
-function onEscKeyPress(evt, removeMessage) {
-  if (evt.key === 'Escape' &&
-    !hashtagsInput.matches(':focus') &&
-    !descriptionInput.matches(':focus')) {
+function onEscKeyPress(evt) {
+  if (evt.key === 'Escape') {
     evt.preventDefault();
-    closeEditForm();
-    removeMessage();
+
+    const message = document.querySelector('.success, .error');
+    if (message) {
+      message.remove();
+      document.removeEventListener('keydown', onEscKeyPress);
+      return;
+    }
+
+    if (
+      !hashtagsInput.matches(':focus') &&
+      !descriptionInput.matches(':focus')
+    ) {
+      closeEditForm();
+    }
   }
 }
 
@@ -137,10 +147,10 @@ const showMessage = (template) => {
   }
 
   if (message.querySelector('button')) {
-    (message.querySelector('button')).addEventListener('click', removeMessage);
+    message.querySelector('button').addEventListener('click', removeMessage);
   }
 
-  document.addEventListener('keydown', (evt) => onEscKeyPress(evt, removeMessage));
+  document.addEventListener('keydown', onEscKeyPress);
   document.addEventListener('click', onOutsideClick);
 };
 
