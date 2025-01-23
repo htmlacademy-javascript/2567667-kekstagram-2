@@ -1,3 +1,7 @@
+import { resetEffects } from './effects-slider.js';
+import { resetScale } from './scale.js';
+import { sendData } from './api.js';
+
 const form = document.querySelector('.img-upload__form');
 const fileInput = document.querySelector('.img-upload__input');
 const uploadOverlay = document.querySelector('.img-upload__overlay');
@@ -5,6 +9,8 @@ const closeButton = document.querySelector('.img-upload__cancel');
 const body = document.body;
 const hashtagsInput = form.querySelector('.text__hashtags');
 const descriptionInput = form.querySelector('.text__description');
+const SUCCESS_TEMPLATE = document.querySelector('#success').content.querySelector('.success');
+const ERROR_TEMPLATE = document.querySelector('#error').content.querySelector('.error');
 
 const MAX_HASHTAGS = 5;
 const MAX_SYMBOLS = 20;
@@ -13,6 +19,7 @@ const MAX_DESCRIPTION_LENGTH = 140;
 const pristine = new Pristine(form, {
   classTo: 'img-upload__field-wrapper',
   errorTextParent: 'img-upload__field-wrapper',
+  errorClass: 'img-upload__field-wrapper--error',
   errorTextClass: 'pristine-error',
 });
 
@@ -47,7 +54,7 @@ const hashtagRules = [
 // Функция для валидации хэштегов
 const validateHashtags = (value) => {
   if (!value.trim()) {
-    return true; // Пустое значение валидно
+    return true;
   }
   const inputArray = value.trim().toLowerCase().split(/\s+/);
   return hashtagRules.every((rule) => rule.check(inputArray));
@@ -71,10 +78,17 @@ const getHashtagsError = (value) => {
 const validateDescription = (value) => value.length <= MAX_DESCRIPTION_LENGTH;
 const getDescriptionError = () =>
   `Длина комментария не может превышать ${MAX_DESCRIPTION_LENGTH} символов.`;
+
 pristine.addValidator(hashtagsInput, validateHashtags, getHashtagsError);
 pristine.addValidator(descriptionInput, validateDescription, getDescriptionError);
 
+descriptionInput.addEventListener('input', () => {
+  if (descriptionInput.value.length >= MAX_DESCRIPTION_LENGTH) {
+    descriptionInput.value = descriptionInput.value.slice(0, MAX_DESCRIPTION_LENGTH); // Ограничиваем длину
+  }
+});
 
+// Открытие формы
 const openEditForm = () => {
   uploadOverlay.classList.remove('hidden');
   body.classList.add('modal-open');
@@ -82,54 +96,86 @@ const openEditForm = () => {
   document.addEventListener('keydown', onEscKeyPress);
 };
 
-// Закрытие формы редактирования
+// Закрытие формы
 function closeEditForm() {
   uploadOverlay.classList.add('hidden');
   body.classList.remove('modal-open');
-
-  form.reset(); // Сбрасываем форму
-  pristine.reset(); // Сбрасываем состояние Pristine
-
+  form.reset();
+  pristine.reset();
+  resetEffects();
+  resetScale();
   closeButton.removeEventListener('click', closeEditForm);
   document.removeEventListener('keydown', onEscKeyPress);
 }
 
 // Закрытие формы при нажатии Escape
 function onEscKeyPress(evt) {
-  if (evt.key === 'Escape' &&
-    !hashtagsInput.matches(':focus') &&
-    !descriptionInput.matches(':focus')) {
+  if (evt.key === 'Escape') {
     evt.preventDefault();
-    closeEditForm();
+
+    const message = document.querySelector('.success, .error');
+    if (message) {
+      message.remove();
+      document.removeEventListener('keydown', onEscKeyPress);
+      return;
+    }
+
+    if (
+      !hashtagsInput.matches(':focus') &&
+      !descriptionInput.matches(':focus')
+    ) {
+      closeEditForm();
+    }
   }
 }
 
-// Отключение обработки Escape при фокусе на полях ввода
-[hashtagsInput, descriptionInput].forEach((input) => {
-  input.addEventListener('keydown', (evt) => {
-    if (evt.key === 'Escape') {
-      evt.stopPropagation();
+// Показ сообщений об успехе/ошибке
+const showMessage = (template) => {
+  const message = template.cloneNode(true);
+  document.body.appendChild(message);
+
+  const removeMessage = () => {
+    message.remove();
+    document.removeEventListener('keydown', onEscKeyPress);
+    document.removeEventListener('click', onOutsideClick);
+  };
+
+  function onOutsideClick(evt) {
+    if (evt.target === message) {
+      removeMessage();
     }
-  });
-});
-
-// Ограничение ввода в комментарий
-descriptionInput.addEventListener('input', () => {
-  if (descriptionInput.value.length >= MAX_DESCRIPTION_LENGTH) {
-    descriptionInput.value = descriptionInput.value.slice(0, MAX_DESCRIPTION_LENGTH); // Ограничиваем длину
   }
-});
 
-// Открытие формы при выборе файла
-fileInput.addEventListener('change', () => {
-  openEditForm();
-});
+  if (message.querySelector('button')) {
+    message.querySelector('button').addEventListener('click', removeMessage);
+  }
+
+  document.addEventListener('keydown', onEscKeyPress);
+  document.addEventListener('click', onOutsideClick);
+};
 
 // Обработчик отправки формы
 form.addEventListener('submit', (evt) => {
   evt.preventDefault();
   const isValid = pristine.validate();
   if (isValid) {
-    form.submit();
+    const formData = new FormData(form);
+    sendData(formData)
+      .then(() => {
+        closeEditForm();
+        showMessage(SUCCESS_TEMPLATE);
+      })
+      .catch(() => {
+        showMessage(ERROR_TEMPLATE);
+      });
   }
+});
+
+form.addEventListener('reset', () => {
+  closeEditForm();
+});
+
+// Открытие формы при выборе файла
+fileInput.addEventListener('change', () => {
+  openEditForm();
 });

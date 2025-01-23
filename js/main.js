@@ -1,6 +1,11 @@
-import {renderImages} from './render-images.js';
+import { getData } from './api.js';
+import { renderImages, showError } from './render-images.js';
 import './form.js';
 import './scale.js';
 import './effects-slider.js';
 
-renderImages();
+getData()
+  .then((photos) => renderImages(photos))
+  .catch(() => {
+    showError();
+  });
