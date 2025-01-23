@@ -109,12 +109,13 @@ function closeEditForm() {
 }
 
 // Закрытие формы при нажатии Escape
-function onEscKeyPress(evt) {
+function onEscKeyPress(evt, removeMessage) {
   if (evt.key === 'Escape' &&
     !hashtagsInput.matches(':focus') &&
     !descriptionInput.matches(':focus')) {
     evt.preventDefault();
     closeEditForm();
+    removeMessage();
   }
 }
 
@@ -139,7 +140,7 @@ const showMessage = (template) => {
     (message.querySelector('button')).addEventListener('click', removeMessage);
   }
 
-  document.addEventListener('keydown', onEscKeyPress);
+  document.addEventListener('keydown', (evt) => onEscKeyPress(evt, removeMessage));
   document.addEventListener('click', onOutsideClick);
 };
 
