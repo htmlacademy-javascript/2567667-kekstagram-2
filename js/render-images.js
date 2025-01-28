@@ -4,7 +4,14 @@ const picturesContainer = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 const errorTemplate = document.querySelector('#data-error').content.querySelector('.data-error');
 
+// Функция очистки старых фотографий перед ререндерингом
+const clearImages = () => {
+  picturesContainer.querySelectorAll('.picture').forEach((picture) => picture.remove());
+};
+
+// Функция отрисовки изображений
 const renderImages = (photos) => {
+  clearImages(); // Удаляем старые изображения
   const fragment = document.createDocumentFragment();
 
   photos.forEach(({ url, description, likes, comments }) => {
