@@ -8,3 +8,13 @@ const getRandomArrayElement = (elements) =>
   elements[getRandomInteger(0, elements.length - 1)];
 
 export { getRandomInteger, getRandomArrayElement };
+
+const debounce = (callback, delay = 500) => {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => callback(...args), delay);
+  };
+};
+
+export { debounce };
