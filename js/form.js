@@ -4,7 +4,6 @@ import { sendData } from './api.js';
 import { initUploadImage } from './upload-image.js';
 
 const form = document.querySelector('.img-upload__form');
-// const fileInput = document.querySelector('.img-upload__input');
 const uploadOverlay = document.querySelector('.img-upload__overlay');
 const closeButton = document.querySelector('.img-upload__cancel');
 const body = document.body;
@@ -177,10 +176,5 @@ form.addEventListener('submit', (evt) => {
 form.addEventListener('reset', () => {
   closeEditForm();
 });
-
-// // Открытие формы при выборе файла
-// fileInput.addEventListener('change', () => {
-//   openEditForm();
-// });
 
 export { openEditForm, showMessage };
