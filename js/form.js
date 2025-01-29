@@ -116,9 +116,15 @@ function onEscKeyPress(evt) {
     evt.preventDefault();
 
     const message = document.querySelector('.success, .error');
+
     if (message) {
       message.remove();
       document.removeEventListener('keydown', onEscKeyPress);
+
+      // Проверяем, осталась ли открытой форма
+      if (!uploadOverlay.classList.contains('hidden')) {
+        document.addEventListener('keydown', onEscKeyPress);
+      }
       return;
     }
 
