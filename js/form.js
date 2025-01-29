@@ -1,9 +1,10 @@
 import { resetEffects } from './effects-slider.js';
 import { resetScale } from './scale.js';
 import { sendData } from './api.js';
+import { initUploadImage } from './upload-image.js';
 
 const form = document.querySelector('.img-upload__form');
-const fileInput = document.querySelector('.img-upload__input');
+// const fileInput = document.querySelector('.img-upload__input');
 const uploadOverlay = document.querySelector('.img-upload__overlay');
 const closeButton = document.querySelector('.img-upload__cancel');
 const body = document.body;
@@ -22,6 +23,8 @@ const pristine = new Pristine(form, {
   errorClass: 'img-upload__field-wrapper--error',
   errorTextClass: 'pristine-error',
 });
+
+initUploadImage();
 
 // Правила для валидации хэштегов
 const hashtagRules = [
@@ -175,7 +178,9 @@ form.addEventListener('reset', () => {
   closeEditForm();
 });
 
-// Открытие формы при выборе файла
-fileInput.addEventListener('change', () => {
-  openEditForm();
-});
+// // Открытие формы при выборе файла
+// fileInput.addEventListener('change', () => {
+//   openEditForm();
+// });
+
+export { openEditForm, showMessage };
