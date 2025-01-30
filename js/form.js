@@ -90,12 +90,6 @@ const getDescriptionError = () =>
 pristine.addValidator(hashtagsInput, validateHashtags, getHashtagsError);
 pristine.addValidator(descriptionInput, validateDescription, getDescriptionError);
 
-descriptionInput.addEventListener('input', () => {
-  if (descriptionInput.value.length >= MAX_DESCRIPTION_LENGTH) {
-    descriptionInput.value = descriptionInput.value.slice(0, MAX_DESCRIPTION_LENGTH); // Ограничиваем длину
-  }
-});
-
 // Открытие формы
 const openEditForm = () => {
   uploadOverlay.classList.remove('hidden');
