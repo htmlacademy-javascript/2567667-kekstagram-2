@@ -6,6 +6,7 @@ import { initUploadImage } from './upload-image.js';
 const form = document.querySelector('.img-upload__form');
 const uploadOverlay = document.querySelector('.img-upload__overlay');
 const closeButton = document.querySelector('.img-upload__cancel');
+const submitButton = document.querySelector('.img-upload__submit');
 const body = document.body;
 const hashtagsInput = form.querySelector('.text__hashtags');
 const descriptionInput = form.querySelector('.text__description');
@@ -26,6 +27,8 @@ const pristine = new Pristine(form, {
 initUploadImage();
 
 // Правила для валидации хэштегов
+const INVALID_SYMBOLS_REGEX = /[^a-zA-Z0-9а-яА-ЯёЁ#]/;
+
 const hashtagRules = [
   {
     check: (inputArray) => inputArray.every((item) => item !== '#'),
@@ -50,6 +53,10 @@ const hashtagRules = [
   {
     check: (inputArray) => inputArray.length <= MAX_HASHTAGS,
     error: `Нельзя указать больше ${MAX_HASHTAGS} хэштегов`,
+  },
+  {
+    check: (inputArray) => inputArray.every((item) => !INVALID_SYMBOLS_REGEX.test(item.slice(1))),
+    error: 'Хэштег не должен содержать спецсимволы, пробелы, эмодзи или знаки пунктуации',
   },
 ];
 
@@ -83,12 +90,6 @@ const getDescriptionError = () =>
 
 pristine.addValidator(hashtagsInput, validateHashtags, getHashtagsError);
 pristine.addValidator(descriptionInput, validateDescription, getDescriptionError);
-
-descriptionInput.addEventListener('input', () => {
-  if (descriptionInput.value.length >= MAX_DESCRIPTION_LENGTH) {
-    descriptionInput.value = descriptionInput.value.slice(0, MAX_DESCRIPTION_LENGTH); // Ограничиваем длину
-  }
-});
 
 // Открытие формы
 const openEditForm = () => {
@@ -167,6 +168,7 @@ form.addEventListener('submit', (evt) => {
   evt.preventDefault();
   const isValid = pristine.validate();
   if (isValid) {
+    submitButton.disabled = true;
     const formData = new FormData(form);
     sendData(formData)
       .then(() => {
@@ -175,6 +177,9 @@ form.addEventListener('submit', (evt) => {
       })
       .catch(() => {
         showMessage(ERROR_TEMPLATE);
+      })
+      .finally(() => {
+        submitButton.disabled = false;
       });
   }
 });
