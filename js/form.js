@@ -26,6 +26,8 @@ const pristine = new Pristine(form, {
 initUploadImage();
 
 // Правила для валидации хэштегов
+const INVALID_SYMBOLS_REGEX = /[^a-zA-Z0-9а-яА-ЯёЁ#]/;
+
 const hashtagRules = [
   {
     check: (inputArray) => inputArray.every((item) => item !== '#'),
@@ -50,6 +52,10 @@ const hashtagRules = [
   {
     check: (inputArray) => inputArray.length <= MAX_HASHTAGS,
     error: `Нельзя указать больше ${MAX_HASHTAGS} хэштегов`,
+  },
+  {
+    check: (inputArray) => inputArray.every((item) => !INVALID_SYMBOLS_REGEX.test(item.slice(1))),
+    error: 'Хэштег не должен содержать спецсимволы, пробелы, эмодзи или знаки пунктуации',
   },
 ];
 
