@@ -6,6 +6,7 @@ import { initUploadImage } from './upload-image.js';
 const form = document.querySelector('.img-upload__form');
 const uploadOverlay = document.querySelector('.img-upload__overlay');
 const closeButton = document.querySelector('.img-upload__cancel');
+const submitButton = document.querySelector('.img-upload__submit');
 const body = document.body;
 const hashtagsInput = form.querySelector('.text__hashtags');
 const descriptionInput = form.querySelector('.text__description');
@@ -167,6 +168,7 @@ form.addEventListener('submit', (evt) => {
   evt.preventDefault();
   const isValid = pristine.validate();
   if (isValid) {
+    submitButton.disabled = true;
     const formData = new FormData(form);
     sendData(formData)
       .then(() => {
@@ -175,6 +177,9 @@ form.addEventListener('submit', (evt) => {
       })
       .catch(() => {
         showMessage(ERROR_TEMPLATE);
+      })
+      .finally(() => {
+        submitButton.disabled = false;
       });
   }
 });
