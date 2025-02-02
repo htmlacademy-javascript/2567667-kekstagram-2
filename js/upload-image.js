@@ -1,10 +1,10 @@
 import { openEditForm, showMessage } from './form.js';
 
+const FILE_TYPES = /\.(jpg|jpeg|png)$/i;
+
 const fileInput = document.getElementById('upload-file');
 const imgPreview = document.querySelector('.img-upload__preview img');
 const effectPreviews = document.querySelectorAll('.effects__preview');
-
-const FILE_TYPES = /\.(jpg|jpeg|png)$/i; // Улучшенная проверка расширения файла
 
 const onFileInputChange = () => {
   const file = fileInput.files[0];

@@ -3,6 +3,11 @@ import { resetScale } from './scale.js';
 import { sendData } from './api.js';
 import { initUploadImage } from './upload-image.js';
 
+const MAX_HASHTAGS = 5;
+const MAX_SYMBOLS = 20;
+const MAX_DESCRIPTION_LENGTH = 140;
+const INVALID_SYMBOLS_REGEX = /[^a-zA-Z0-9а-яА-ЯёЁ#]/;
+
 const form = document.querySelector('.img-upload__form');
 const uploadOverlay = document.querySelector('.img-upload__overlay');
 const closeButton = document.querySelector('.img-upload__cancel');
@@ -10,12 +15,8 @@ const submitButton = document.querySelector('.img-upload__submit');
 const body = document.body;
 const hashtagsInput = form.querySelector('.text__hashtags');
 const descriptionInput = form.querySelector('.text__description');
-const SUCCESS_TEMPLATE = document.querySelector('#success').content.querySelector('.success');
-const ERROR_TEMPLATE = document.querySelector('#error').content.querySelector('.error');
-
-const MAX_HASHTAGS = 5;
-const MAX_SYMBOLS = 20;
-const MAX_DESCRIPTION_LENGTH = 140;
+const successTemplate = document.querySelector('#success').content.querySelector('.success');
+const errorTemplate = document.querySelector('#error').content.querySelector('.error');
 
 const pristine = new Pristine(form, {
   classTo: 'img-upload__field-wrapper',
@@ -27,8 +28,6 @@ const pristine = new Pristine(form, {
 initUploadImage();
 
 // Правила для валидации хэштегов
-const INVALID_SYMBOLS_REGEX = /[^a-zA-Z0-9а-яА-ЯёЁ#]/;
-
 const hashtagRules = [
   {
     check: (inputArray) => inputArray.every((item) => item !== '#'),
@@ -173,10 +172,10 @@ form.addEventListener('submit', (evt) => {
     sendData(formData)
       .then(() => {
         onCloseEditForm();
-        showMessage(SUCCESS_TEMPLATE);
+        showMessage(successTemplate);
       })
       .catch(() => {
-        showMessage(ERROR_TEMPLATE);
+        showMessage(errorTemplate);
       })
       .finally(() => {
         submitButton.disabled = false;

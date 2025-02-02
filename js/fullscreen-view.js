@@ -1,3 +1,5 @@
+const COMMENTS_PER_PAGE = 5;
+
 const bigPicture = document.querySelector('.big-picture');
 const bigPictureImg = bigPicture.querySelector('.big-picture__img img');
 const likesCount = bigPicture.querySelector('.likes-count');
@@ -10,7 +12,6 @@ const commentsLoader = bigPicture.querySelector('.comments-loader');
 const closeButton = bigPicture.querySelector('.big-picture__cancel');
 const body = document.body;
 
-const COMMENTS_PER_PAGE = 5; // Количество комментариев на один шаг загрузки
 let currentComments = [];
 let shownComments = 0;
 
