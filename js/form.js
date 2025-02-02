@@ -3,6 +3,11 @@ import { resetScale } from './scale.js';
 import { sendData } from './api.js';
 import { initUploadImage } from './upload-image.js';
 
+const MAX_HASHTAGS = 5;
+const MAX_SYMBOLS = 20;
+const MAX_DESCRIPTION_LENGTH = 140;
+const INVALID_SYMBOLS_REGEX = /[^a-zA-Z0-9а-яА-ЯёЁ#]/;
+
 const form = document.querySelector('.img-upload__form');
 const uploadOverlay = document.querySelector('.img-upload__overlay');
 const closeButton = document.querySelector('.img-upload__cancel');
@@ -10,12 +15,8 @@ const submitButton = document.querySelector('.img-upload__submit');
 const body = document.body;
 const hashtagsInput = form.querySelector('.text__hashtags');
 const descriptionInput = form.querySelector('.text__description');
-const SUCCESS_TEMPLATE = document.querySelector('#success').content.querySelector('.success');
-const ERROR_TEMPLATE = document.querySelector('#error').content.querySelector('.error');
-
-const MAX_HASHTAGS = 5;
-const MAX_SYMBOLS = 20;
-const MAX_DESCRIPTION_LENGTH = 140;
+const successTemplate = document.querySelector('#success').content.querySelector('.success');
+const errorTemplate = document.querySelector('#error').content.querySelector('.error');
 
 const pristine = new Pristine(form, {
   classTo: 'img-upload__field-wrapper',
@@ -27,8 +28,6 @@ const pristine = new Pristine(form, {
 initUploadImage();
 
 // Правила для валидации хэштегов
-const INVALID_SYMBOLS_REGEX = /[^a-zA-Z0-9а-яА-ЯёЁ#]/;
-
 const hashtagRules = [
   {
     check: (inputArray) => inputArray.every((item) => item !== '#'),
@@ -95,24 +94,24 @@ pristine.addValidator(descriptionInput, validateDescription, getDescriptionError
 const openEditForm = () => {
   uploadOverlay.classList.remove('hidden');
   body.classList.add('modal-open');
-  closeButton.addEventListener('click', closeEditForm);
-  document.addEventListener('keydown', onEscKeyPress);
+  closeButton.addEventListener('click', onCloseEditForm);
+  document.addEventListener('keydown', onDocumentKeydown);
 };
 
 // Закрытие формы
-function closeEditForm() {
+function onCloseEditForm() {
   uploadOverlay.classList.add('hidden');
   body.classList.remove('modal-open');
   form.reset();
   pristine.reset();
   resetEffects();
   resetScale();
-  closeButton.removeEventListener('click', closeEditForm);
-  document.removeEventListener('keydown', onEscKeyPress);
+  closeButton.removeEventListener('click', onCloseEditForm);
+  document.removeEventListener('keydown', onDocumentKeydown);
 }
 
 // Закрытие формы при нажатии Escape
-function onEscKeyPress(evt) {
+function onDocumentKeydown(evt) {
   if (evt.key === 'Escape') {
     evt.preventDefault();
 
@@ -120,11 +119,11 @@ function onEscKeyPress(evt) {
 
     if (message) {
       message.remove();
-      document.removeEventListener('keydown', onEscKeyPress);
+      document.removeEventListener('keydown', onDocumentKeydown);
 
       // Проверяем, осталась ли открытой форма
       if (!uploadOverlay.classList.contains('hidden')) {
-        document.addEventListener('keydown', onEscKeyPress);
+        document.addEventListener('keydown', onDocumentKeydown);
       }
       return;
     }
@@ -133,7 +132,7 @@ function onEscKeyPress(evt) {
       !hashtagsInput.matches(':focus') &&
       !descriptionInput.matches(':focus')
     ) {
-      closeEditForm();
+      onCloseEditForm();
     }
   }
 }
@@ -143,23 +142,23 @@ const showMessage = (template) => {
   const message = template.cloneNode(true);
   document.body.appendChild(message);
 
-  const removeMessage = () => {
+  const onCloseMessageClick = () => {
     message.remove();
-    document.removeEventListener('keydown', onEscKeyPress);
+    document.removeEventListener('keydown', onDocumentKeydown);
     document.removeEventListener('click', onOutsideClick);
   };
 
   function onOutsideClick(evt) {
     if (evt.target === message) {
-      removeMessage();
+      onCloseMessageClick();
     }
   }
 
   if (message.querySelector('button')) {
-    message.querySelector('button').addEventListener('click', removeMessage);
+    message.querySelector('button').addEventListener('click', onCloseMessageClick);
   }
 
-  document.addEventListener('keydown', onEscKeyPress);
+  document.addEventListener('keydown', onDocumentKeydown);
   document.addEventListener('click', onOutsideClick);
 };
 
@@ -172,11 +171,11 @@ form.addEventListener('submit', (evt) => {
     const formData = new FormData(form);
     sendData(formData)
       .then(() => {
-        closeEditForm();
-        showMessage(SUCCESS_TEMPLATE);
+        onCloseEditForm();
+        showMessage(successTemplate);
       })
       .catch(() => {
-        showMessage(ERROR_TEMPLATE);
+        showMessage(errorTemplate);
       })
       .finally(() => {
         submitButton.disabled = false;
@@ -185,7 +184,7 @@ form.addEventListener('submit', (evt) => {
 });
 
 form.addEventListener('reset', () => {
-  closeEditForm();
+  onCloseEditForm();
 });
 
 export { openEditForm, showMessage };

@@ -1,9 +1,3 @@
-const imgPreview = document.querySelector('.img-upload__preview img');
-const effectsList = document.querySelector('.effects__list');
-const effectLevel = document.querySelector('.effect-level');
-const effectLevelSlider = document.querySelector('.effect-level__slider');
-const effectLevelValue = document.querySelector('.effect-level__value');
-
 const DEFAULT_EFFECT = 'none';
 const EFFECTS = {
   none: {
@@ -53,6 +47,12 @@ const EFFECTS = {
     },
   },
 };
+
+const imgPreview = document.querySelector('.img-upload__preview img');
+const effectsList = document.querySelector('.effects__list');
+const effectLevel = document.querySelector('.effect-level');
+const effectLevelSlider = document.querySelector('.effect-level__slider');
+const effectLevelValue = document.querySelector('.effect-level__value');
 
 // Текущий выбранный эффект
 let currentEffect = DEFAULT_EFFECT;

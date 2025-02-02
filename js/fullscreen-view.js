@@ -1,3 +1,5 @@
+const COMMENTS_PER_PAGE = 5;
+
 const bigPicture = document.querySelector('.big-picture');
 const bigPictureImg = bigPicture.querySelector('.big-picture__img img');
 const likesCount = bigPicture.querySelector('.likes-count');
@@ -10,7 +12,6 @@ const commentsLoader = bigPicture.querySelector('.comments-loader');
 const closeButton = bigPicture.querySelector('.big-picture__cancel');
 const body = document.body;
 
-const COMMENTS_PER_PAGE = 5; // Количество комментариев на один шаг загрузки
 let currentComments = [];
 let shownComments = 0;
 
@@ -38,7 +39,7 @@ const renderComments = (comments) => {
 };
 
 // Функция для показа следующей порции комментариев
-const showMoreComments = () => {
+const onCommentsLoaderClick = () => {
   const remainingComments = currentComments.slice(shownComments, shownComments + COMMENTS_PER_PAGE);
   renderComments(remainingComments);
   shownComments += remainingComments.length;
@@ -70,28 +71,28 @@ const openBigPicture = ({ url, likes, description, comments }) => {
   commentsLoader.classList.remove('hidden');
 
   // Показываем первую порцию комментариев
-  showMoreComments();
+  onCommentsLoaderClick();
 
   // Добавляем обработчик на кнопку загрузки дополнительных комментариев
-  commentsLoader.addEventListener('click', showMoreComments);
+  commentsLoader.addEventListener('click', onCommentsLoaderClick);
 
   // Обработчики закрытия окна
-  const onClose = () => {
+  const onBigPictureClose = () => {
     bigPicture.classList.add('hidden');
     body.classList.remove('modal-open');
-    closeButton.removeEventListener('click', onClose);
-    document.removeEventListener('keydown', onEscClose);
-    commentsLoader.removeEventListener('click', showMoreComments);
+    closeButton.removeEventListener('click', onBigPictureClose);
+    document.removeEventListener('keydown', onDocumentKeydown);
+    commentsLoader.removeEventListener('click', onCommentsLoaderClick);
   };
 
-  function onEscClose(evt) {
+  function onDocumentKeydown(evt) {
     if (evt.key === 'Escape') {
-      onClose();
+      onBigPictureClose();
     }
   }
 
-  closeButton.addEventListener('click', onClose);
-  document.addEventListener('keydown', onEscClose);
+  closeButton.addEventListener('click', onBigPictureClose);
+  document.addEventListener('keydown', onDocumentKeydown);
 };
 
 export { openBigPicture };

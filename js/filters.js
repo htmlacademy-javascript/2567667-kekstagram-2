@@ -1,10 +1,11 @@
 import { renderImages } from './render-images.js';
 import { debounce } from './util.js';
 
+const RANDOM_PHOTO_COUNT = 10;
+
 const imgFilters = document.querySelector('.img-filters');
 const filterButtons = document.querySelectorAll('.img-filters__button');
 
-const RANDOM_PHOTO_COUNT = 10;
 let photos = [];
 
 // Функция рендеринга изображений с учетом фильтра
